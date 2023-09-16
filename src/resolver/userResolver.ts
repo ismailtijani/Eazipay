@@ -15,7 +15,7 @@ export default class userResolver {
   @UseMiddleware(Auth)
   async profile(@Ctx() ctx: MyContext): Promise<UserType | null> {
     try {
-      const user = await userService.userProfile(ctx.req.session.id);
+      const user = await userService.userProfile(ctx.req.session.userId);
       return user;
     } catch (error) {
       throw new Error("Error fetching data");

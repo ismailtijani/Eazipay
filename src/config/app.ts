@@ -9,6 +9,7 @@ import session from "express-session";
 import RedisStore from "connect-redis";
 import Redis from "./redis";
 import cors from "cors";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
 class Bootstrap {
   public app: Application;
@@ -44,9 +45,9 @@ class Bootstrap {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: true,
+          // secure: true,
           maxAge: 60 * 60 * 24 * 7,
-          sameSite: "none",
+          // sameSite: "none",
         },
       })
     );
@@ -60,6 +61,7 @@ class Bootstrap {
     this.server = new ApolloServer({
       schema,
       context: ({ req }) => ({ req }),
+      plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
       // formatError: ArgumentValidationError,
     });
     // Start the Apollo Server

@@ -43,7 +43,7 @@ export default class userService {
   };
 
   static async userProfile(id: any) {
-    const user = await User.findOne(id);
+    const user = await User.findById(id);
     return user;
   }
 }
