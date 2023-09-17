@@ -1,6 +1,7 @@
 import crypto from "crypto";
-import { AccountStatusEnum } from "../enums";
+import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
+import MailService from "../Email/service";
 
 export default class userService {
   static signup = async (
@@ -26,10 +27,29 @@ export default class userService {
       user.confirmationCode = token;
       await user.save();
       // Send Confirmation Message to new user
-      //   MailService.sendAccountActivationCode({ email, token });
-      return user;
+      const response = await MailService.sendAccountActivationCode({ email, token });
+      return response;
     } catch (error) {
       throw error;
+    }
+  };
+
+  static confirmAccount = async (confirmationCode: string) => {
+    try {
+      const user = await User.findOne({ confirmationCode });
+      if (!user) return false;
+
+      const updateData = { status: AccountStatusEnum.ACTIVATED, confirmationCode: null };
+      await User.findOneAndUpdate({ _id: user._id }, updateData, {
+        new: true,
+        runValidators: true,
+      });
+      //Send Account confirmation Success mail
+      await MailService.sendAccountSuccessEmail({ email: user.email });
+
+      return true;
+    } catch (error) {
+      throw Error("An error occured while trying to confirm your account, Please try agin later");
     }
   };
 

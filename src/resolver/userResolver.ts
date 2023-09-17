@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { Resolver, Mutation, Arg, Query, Ctx, Field, UseMiddleware } from "type-graphql";
+import { Resolver, Mutation, Arg, Query, Ctx, UseMiddleware } from "type-graphql";
 import userService from "../services/user";
-import { MyContext, SignupInput, UserType } from "../typeDef";
+import { MyContext, SignupInput, UserType } from "../library/typeDef";
 import { Auth } from "../middleware/auth";
 
 @Resolver()
@@ -22,15 +22,31 @@ export default class userResolver {
     }
   }
 
-  @Mutation(() => UserType)
+  @Mutation(() => String)
   async signup(
     @Arg("signupInputs") { firstName, lastName, email, password, phoneNumber }: SignupInput
-  ): Promise<UserType> {
+  ): Promise<string> {
     try {
       const user = await userService.signup(firstName, lastName, email, password, phoneNumber);
-      return user;
+      if (!user) {
+        throw Error();
+      } else {
+        return "Account created successfuly!";
+      }
     } catch (error: any) {
       throw new Error(`Failed to create user: ${error.message}`);
+    }
+  }
+
+  @Mutation(() => String)
+  async confirmAccount(@Arg("confirmationCode") confirmationCode: string): Promise<string> {
+    try {
+      const confrimed = await userService.confirmAccount(confirmationCode);
+      if (!confrimed) {
+        return "Invalid or Expired confirmation code";
+      } else return "Account Activation was successful";
+    } catch (error: any) {
+      throw Error(`Account confirmation failed: ${error.message}`);
     }
   }
 

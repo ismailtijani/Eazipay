@@ -1,5 +1,5 @@
 import { HydratedDocument, Model, Document } from "mongoose";
-import { UserLevelEnum, AccountStatusEnum } from "../enums";
+import { UserLevelEnum, AccountStatusEnum } from "../library/enums";
 
 export interface IUser {
   firstName: string;

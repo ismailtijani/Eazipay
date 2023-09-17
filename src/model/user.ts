@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { UserLevelEnum, AccountStatusEnum } from "../enums";
+import { UserLevelEnum, AccountStatusEnum } from "../library/enums";
 import { IUser, IUserMethods, UserDocument, UserModel } from "./interface";
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
@@ -81,9 +81,12 @@ userSchema.statics.findByCredentials = async (
   password: IUser["password"]
 ) => {
   const user = await User.findOne({ email });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("No Account with this credentials, kindly signup");
+  } else if (user && user.status !== AccountStatusEnum.ACTIVATED)
+    throw new Error("Account not activated, kindly check your mail for activation link");
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) null;
+  if (!isMatch) throw new Error("Email or Password is incorrect");
   return user;
 };
 
