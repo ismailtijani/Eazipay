@@ -47,7 +47,6 @@ class MailService {
           if (error) {
             success = false;
             console.log(error);
-            // Logger.error(error);
             // Logger.error(`Account confirmation code Email to ${params.email} failed!!`);
           }
         }
