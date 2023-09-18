@@ -63,7 +63,46 @@ export default class userService {
   };
 
   static async userProfile(id: any) {
-    const user = await User.findById(id);
-    return user;
+    try {
+      const user = await User.findById(id);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async forgetPassword(email: string) {
+    try {
+      // Search for user Account
+      const user = await User.findOne({ email });
+      if (!user) throw new Error("Sorry, we don't recognize this account");
+      //Generate reset Password Token
+      const resetToken = await user.generateResetPasswordToken();
+      await MailService.sendPasswordReset({ name: user.firstName, email, token: resetToken });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async resetPassword(token: string, password: string) {
+    // Hash token
+    const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    try {
+      const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() },
+      });
+
+      if (!user) throw new Error("Invalid or Expired Token");
+      // Set new password
+      user.password = password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save();
+    } catch (error) {
+      throw error;
+    }
   }
 }

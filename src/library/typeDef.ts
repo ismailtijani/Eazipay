@@ -1,4 +1,4 @@
-import { IsEmail, Length } from "class-validator";
+import { IsEmail, Length, MinLength } from "class-validator";
 import { Request } from "express";
 import { Types } from "mongoose";
 import { Field, InputType, ObjectType } from "type-graphql";
@@ -34,7 +34,14 @@ export class UserType {
 }
 
 @InputType()
-export class SignupInput {
+class Password {
+  @Field()
+  @MinLength(8)
+  password: string;
+}
+
+@InputType()
+export class SignupInput extends Password {
   @Field()
   @Length(3, 30, { message: "First name must be greater then 3 characters" })
   firstName: string;
@@ -49,9 +56,6 @@ export class SignupInput {
 
   @Field({ nullable: true })
   phoneNumber: string;
-
-  @Field()
-  password: string;
 }
 
 @InputType()
@@ -61,6 +65,12 @@ export class LoginInput {
 
   @Field()
   password: string;
+}
+
+@InputType()
+export class ResetPasswordInputs extends Password {
+  @Field()
+  token: string;
 }
 
 export interface MyContext {

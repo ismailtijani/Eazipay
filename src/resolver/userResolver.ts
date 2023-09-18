@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Resolver, Mutation, Arg, Query, Ctx, UseMiddleware } from "type-graphql";
 import userService from "../services/user";
-import { MyContext, SignupInput, UserType } from "../library/typeDef";
+import { MyContext, ResetPasswordInputs, SignupInput, UserType } from "../library/typeDef";
 import { Auth } from "../middleware/auth";
 
 @Resolver()
@@ -62,6 +62,26 @@ export default class userResolver {
       return user;
     } catch (error: any) {
       throw new Error(`Failed to login: ${error.message}`);
+    }
+  }
+
+  @Mutation(() => String)
+  async forgetPassword(@Arg("email") email: string): Promise<string> {
+    try {
+      await userService.forgetPassword(email);
+      return "Reset password link has been sent to your Email✅";
+    } catch (error: any) {
+      throw new Error(`An error occured: ${error.message}`);
+    }
+  }
+
+  @Mutation(() => String)
+  async resetPassword(@Arg("data") { token, password }: ResetPasswordInputs): Promise<string> {
+    try {
+      await userService.resetPassword(token, password);
+      return "Password reset successfully ✅";
+    } catch (error: any) {
+      throw new Error(`An error occured: ${error.message}`);
     }
   }
 }
