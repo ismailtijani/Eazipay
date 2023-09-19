@@ -54,7 +54,6 @@ class MailService {
     } catch (error) {
       success = false;
       console.log(`Mail Service Error!: ${error}`);
-      // Logger.error(`Mail Service Error!: ${error}`);
     }
     return success;
   }
@@ -75,14 +74,12 @@ class MailService {
           if (error) {
             success = false;
             console.log(`2FAAuthCode Email to ${params.email} failed!!`);
-            // Logger.error(`2FAAuthCode Email to ${params.email} failed!!`);
           }
         }
       );
     } catch (error) {
       success = false;
       console.log(`Google Authentication Failed!: ${error}`);
-      // Logger.error(`Google Authentication Failed!: ${error}`);
     }
     return success;
   }
@@ -103,14 +100,12 @@ class MailService {
           if (error) {
             success = false;
             console.log(`Account Success Email to ${params.email} failed!!`);
-            // Logger.error(`Account Success Email to ${params.email} failed!!`);
           }
         }
       );
     } catch (error) {
       success = false;
       console.log(`Google Authentication Failed!: ${error}`);
-      // Logger.error(`Google Authentication Failed!: ${error}`);
     }
     return success;
   }
@@ -131,14 +126,12 @@ class MailService {
           if (error) {
             success = false;
             console.log(`Password reset Email to ${params.email} failed!!`);
-            // Logger.error(`Password reset Email to ${params.email} failed!!`);
           }
         }
       );
     } catch (error) {
       success = false;
       console.log(`Google Authentication Failed ${error}`);
-      // Logger.error(`Google Authentication Failed ${error}`);
     }
     return success;
   }
