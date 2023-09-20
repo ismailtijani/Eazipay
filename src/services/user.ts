@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
 import MailService from "../Email/service";
+import { MyContext } from "../library/typeDef";
+import { resolve } from "path";
 
 export default class userService {
   static signup = async (
@@ -54,21 +56,27 @@ export default class userService {
   };
 
   static login = async (email: string, password: string) => {
-    try {
-      const user = await User.findByCredentials(email, password);
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    const user = await User.findByCredentials(email, password);
+    return user;
   };
 
   static async userProfile(id: any) {
-    try {
-      const user = await User.findById(id);
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    const user = await User.findById(id);
+    return user;
+  }
+
+  static logout(ctx: MyContext): Promise<boolean> {
+    return new Promise((resolve, reject) =>
+      ctx.req.session.destroy((error) => {
+        if (error) {
+          console.log(error);
+          return reject(false);
+        }
+
+        ctx.res.clearCookie("sot");
+        return resolve(true);
+      })
+    );
   }
 
   static async forgetPassword(email: string) {

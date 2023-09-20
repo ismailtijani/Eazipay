@@ -60,7 +60,7 @@ class Bootstrap {
 
     this.server = new ApolloServer({
       schema,
-      context: ({ req }) => ({ req }),
+      context: ({ req, res }) => ({ req, res }),
       plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
       // formatError: ArgumentValidationError,
     });

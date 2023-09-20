@@ -66,6 +66,13 @@ export default class userResolver {
   }
 
   @Mutation(() => String)
+  async logout(@Ctx() ctx: MyContext): Promise<string> {
+    const res = await userService.logout(ctx);
+    if (!res) return "Error occured, please try again";
+    return "You have successfully logged out of this system";
+  }
+
+  @Mutation(() => String)
   async forgetPassword(@Arg("email") email: string): Promise<string> {
     try {
       await userService.forgetPassword(email);

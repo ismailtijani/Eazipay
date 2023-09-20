@@ -1,5 +1,5 @@
 import { IsEmail, Length, MinLength } from "class-validator";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { Types } from "mongoose";
 import { Field, InputType, ObjectType } from "type-graphql";
 
@@ -75,6 +75,7 @@ export class ResetPasswordInputs extends Password {
 
 export interface MyContext {
   req: Request;
+  res: Response;
 }
 
 declare module "express-session" {
