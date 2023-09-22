@@ -3,7 +3,6 @@ import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
 import MailService from "../Email/service";
 import { MyContext } from "../library/typeDef";
-import { resolve } from "path";
 
 export default class userService {
   static signup = async (
