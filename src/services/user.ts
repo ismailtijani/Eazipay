@@ -3,6 +3,7 @@ import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
 import MailService from "../Email/service";
 import { MyContext } from "../library/typeDef";
+import { ApolloError } from "apollo-server-express";
 
 export default class userService {
   static signup = async (
@@ -14,12 +15,14 @@ export default class userService {
   ) => {
     try {
       //Check if there is a registered account with the email
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ email }).lean();
 
       if (existingUser && existingUser.status === AccountStatusEnum.PENDING) {
-        throw new Error("An Account Already Exist with this details, kindly verify your account");
+        throw new ApolloError(
+          "An Account Already Exist with this details, kindly verify your account"
+        );
       } else if (existingUser && existingUser.status === AccountStatusEnum.ACTIVATED) {
-        throw new Error("User alredy exist, Kindly login");
+        throw new ApolloError("User alredy exist, Kindly login");
       }
       //Create User account
       const user = await User.create({ firstName, lastName, email, phoneNumber, password });
