@@ -15,14 +15,14 @@ import Logout from "../resolvers/logout";
 import Login from "../resolvers/login";
 import ForgetPassword from "../resolvers/forgetPassword";
 import AccountConfrimation from "../resolvers/accountConfirmation";
+import Home from "../queries/homepage";
+import Profile from "../queries/profile";
 
 class Bootstrap {
   public app: Application;
   public server: ApolloServer;
   public mongoUrl =
-    env.NODE_ENV === "development"
-      ? `mongodb://127.0.0.1/eazipayTest`
-      : (env.MONGODB_URL as string);
+    env.NODE_ENV === "development" ? `mongodb://127.0.0.1/eazipayDev` : (env.MONGODB_URL as string);
 
   constructor() {
     this.app = express();
@@ -60,7 +60,16 @@ class Bootstrap {
 
   private async apolloServer() {
     const schema = await buildSchema({
-      resolvers: [ResetPassword, Signup, Logout, Login, ForgetPassword, AccountConfrimation],
+      resolvers: [
+        Home,
+        Profile,
+        ResetPassword,
+        Signup,
+        Logout,
+        Login,
+        ForgetPassword,
+        AccountConfrimation,
+      ],
     });
 
     this.server = new ApolloServer({

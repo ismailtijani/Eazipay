@@ -10,12 +10,8 @@ export default class Login {
     @Arg("password") password: string,
     @Ctx() ctx: MyContext
   ): Promise<UserType | null> {
-    try {
-      const user = await userService.login(email, password);
-      ctx.req.session.userId = user._id.toString();
-      return user;
-    } catch (error: any) {
-      throw new Error(`Failed to login: ${error.message}`);
-    }
+    const user = await userService.login(email, password);
+    ctx.req.session.userId = user._id.toString();
+    return user;
   }
 }

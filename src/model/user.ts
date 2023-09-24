@@ -80,14 +80,18 @@ userSchema.statics.findByCredentials = async (
   email: IUser["email"],
   password: IUser["password"]
 ) => {
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new Error("No Account with this credentials, kindly signup");
-  } else if (user && user.status !== AccountStatusEnum.ACTIVATED)
-    throw new Error("Account not activated, kindly check your mail for activation link");
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Email or Password is incorrect");
-  return user;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("No Account with this credentials, kindly signup");
+    } else if (user && user.status !== AccountStatusEnum.ACTIVATED)
+      throw new Error("Account not activated, kindly check your mail for activation link");
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Email or Password is incorrect");
+    return user;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const User = model<IUser, UserModel>("User", userSchema);

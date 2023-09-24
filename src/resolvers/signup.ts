@@ -8,15 +8,6 @@ export default class Signup {
   async signup(
     @Arg("signupInputs") { firstName, lastName, email, password, phoneNumber }: SignupInput
   ): Promise<string> {
-    try {
-      const user = await userService.signup(firstName, lastName, email, password, phoneNumber);
-      if (!user) {
-        throw Error();
-      } else {
-        return "Account created successfuly!";
-      }
-    } catch (error: any) {
-      throw new Error(`Failed to create user: ${error.message}`);
-    }
+    return await userService.signup(firstName, lastName, email, password, phoneNumber);
   }
 }

@@ -31,8 +31,8 @@ export default class userService {
       user.confirmationCode = token;
       await user.save();
       // Send Confirmation Message to new user
-      const response = await MailService.sendAccountActivationCode({ email, token });
-      return response;
+      await MailService.sendAccountActivationCode({ email, token });
+      return "Account created successfuly!";
     } catch (error) {
       throw error;
     }
@@ -41,7 +41,7 @@ export default class userService {
   static confirmAccount = async (confirmationCode: string) => {
     try {
       const user = await User.findOne({ confirmationCode });
-      if (!user) return false;
+      if (!user) return "Invalid or Expired confirmation code";
 
       const updateData = { status: AccountStatusEnum.ACTIVATED, confirmationCode: null };
       await User.findOneAndUpdate({ _id: user._id }, updateData, {
@@ -51,32 +51,38 @@ export default class userService {
       //Send Account confirmation Success mail
       await MailService.sendAccountSuccessEmail({ email: user.email });
 
-      return true;
+      return "Account Activation was successful";
     } catch (error) {
-      throw Error("An error occured while trying to confirm your account, Please try agin later");
+      throw error;
     }
   };
 
   static login = async (email: string, password: string) => {
-    const user = await User.findByCredentials(email, password);
-    return user;
+    try {
+      return await User.findByCredentials(email, password);
+    } catch (error) {
+      throw error;
+    }
   };
 
   static async userProfile(id: any) {
-    const user = await User.findById(id);
-    return user;
+    try {
+      return await User.findById(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  static logout(ctx: MyContext): Promise<boolean> {
+  static logout(ctx: MyContext): Promise<string> {
     return new Promise((resolve, reject) =>
       ctx.req.session.destroy((error) => {
         if (error) {
           console.log(error);
-          return reject(false);
+          return reject("Error occured, please try again");
         }
 
         ctx.res.clearCookie("sot");
-        return resolve(true);
+        return resolve("You have successfully logged out of this system");
       })
     );
   }
@@ -85,10 +91,11 @@ export default class userService {
     try {
       // Search for user Account
       const user = await User.findOne({ email });
-      if (!user) throw new Error("Sorry, we don't recognize this account");
+      if (!user) return "Sorry, we don't recognize this account";
       //Generate reset Password Token
       const resetToken = await user.generateResetPasswordToken();
       await MailService.sendPasswordReset({ name: user.firstName, email, token: resetToken });
+      return "Reset password link has been sent to your Email✅";
     } catch (error) {
       throw error;
     }
@@ -104,13 +111,14 @@ export default class userService {
         resetPasswordExpire: { $gt: Date.now() },
       });
 
-      if (!user) throw new Error("Invalid or Expired Token");
+      if (!user) return "Invalid or Expired Token";
       // Set new password
       user.password = password;
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
 
       await user.save();
+      return "Password reset successfully ✅";
     } catch (error) {
       throw error;
     }

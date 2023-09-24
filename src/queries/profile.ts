@@ -8,11 +8,6 @@ export default class Profile {
   @Query(() => UserType, { nullable: true })
   @UseMiddleware(Auth)
   async profile(@Ctx() ctx: MyContext): Promise<UserType | null> {
-    try {
-      const user = await userService.userProfile(ctx.req.session.userId);
-      return user;
-    } catch (error) {
-      throw new Error("Error fetching data");
-    }
+    return await userService.userProfile(ctx.req.session.userId);
   }
 }
