@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
-import MailService from "../Email/service";
+import MailService from "../mail/service";
 import { MyContext } from "../library/typeDef";
 import { ApolloError } from "apollo-server-express";
 

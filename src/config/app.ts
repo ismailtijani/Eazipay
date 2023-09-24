@@ -3,17 +3,22 @@ import "dotenv/config";
 import { env } from "process";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import userResolver from "../resolver/userResolver";
 import mongoose from "mongoose";
 import session from "express-session";
 import RedisStore from "connect-redis";
 import Redis from "./redis";
 import cors from "cors";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import ResetPassword from "../resolvers/resetPassword";
+import Signup from "../resolvers/signup";
+import Logout from "../resolvers/logout";
+import Login from "../resolvers/login";
+import ForgetPassword from "../resolvers/forgetPassword";
+import AccountConfrimation from "../resolvers/accountConfirmation";
 
 class Bootstrap {
   public app: Application;
-  private server: ApolloServer;
+  public server: ApolloServer;
   public mongoUrl =
     env.NODE_ENV === "development"
       ? `mongodb://127.0.0.1/eazipayTest`
@@ -55,7 +60,7 @@ class Bootstrap {
 
   private async apolloServer() {
     const schema = await buildSchema({
-      resolvers: [userResolver],
+      resolvers: [ResetPassword, Signup, Logout, Login, ForgetPassword, AccountConfrimation],
     });
 
     this.server = new ApolloServer({
@@ -83,4 +88,4 @@ class Bootstrap {
 }
 
 export const PORT = env.PORT || 4000;
-export default new Bootstrap().app;
+export const { app, server } = new Bootstrap();
