@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { IsEmail, Length, MinLength } from "class-validator";
 import { Request, Response } from "express";
 import { Types } from "mongoose";
