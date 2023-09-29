@@ -4,14 +4,18 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 let mongoServer: MongoMemoryServer;
 
 export const connect_db = async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri(), { dbName: "Eazipay Test" });
+  if (!mongoServer) {
+    // If mongoServer is not initialized, create a new instance
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+    await mongoose.connect(mongoUri, { dbName: "EazipayTest" });
+  }
 };
 
 export const drop_db = async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-  await mongoServer.stop();
-
-  await mongoose.disconnect();
+  if (mongoServer) {
+    await mongoose.connection.close();
+    await mongoServer.stop();
+    // mongoServer = null;
+  }
 };

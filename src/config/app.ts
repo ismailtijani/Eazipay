@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express, { Application } from "express";
 import "dotenv/config";
 import { env } from "process";
@@ -8,7 +9,10 @@ import session from "express-session";
 import RedisStore from "connect-redis";
 import Redis from "./redis";
 import cors from "cors";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "apollo-server-core";
 import ResetPassword from "../resolvers/resetPassword";
 import Signup from "../resolvers/signup";
 import Logout from "../resolvers/logout";
@@ -17,12 +21,11 @@ import ForgetPassword from "../resolvers/forgetPassword";
 import AccountConfrimation from "../resolvers/accountConfirmation";
 import Home from "../queries/homepage";
 import Profile from "../queries/profile";
+import { mongoUrl } from "../environment";
 
 class Bootstrap {
   public app: Application;
   public server: ApolloServer;
-  public mongoUrl =
-    env.NODE_ENV === "development" ? `mongodb://127.0.0.1/eazipayDev` : (env.MONGODB_URL as string);
 
   constructor() {
     this.app = express();
@@ -50,7 +53,7 @@ class Bootstrap {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          // secure: true,
+          secure: env.NODE_ENV === "production",
           maxAge: 60 * 60 * 24 * 7,
           // sameSite: "none",
         },
@@ -62,21 +65,25 @@ class Bootstrap {
     const schema = await buildSchema({
       resolvers: [
         Home,
-        Profile,
-        ResetPassword,
         Signup,
-        Logout,
         Login,
+        Profile,
+        Logout,
+        ResetPassword,
         ForgetPassword,
         AccountConfrimation,
       ],
+      // resolvers: [__dirname + "../{queries, resolvers}/**/*.ts"],
     });
 
     this.server = new ApolloServer({
       schema,
       context: ({ req, res }) => ({ req, res }),
-      plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-      // formatError: ArgumentValidationError,
+      plugins: [
+        env.NODE_ENV === "production"
+          ? ApolloServerPluginLandingPageProductionDefault()
+          : ApolloServerPluginLandingPageGraphQLPlayground(),
+      ],
     });
     // Start the Apollo Server
     await this.server.start();
@@ -86,7 +93,7 @@ class Bootstrap {
 
   private mongoSetup() {
     try {
-      mongoose.set("strictQuery", false).connect(this.mongoUrl);
+      mongoose.set("strictQuery", false).connect(mongoUrl);
       console.log("DB Connection Successful");
       console.log(`'''''''''''''''''''''''''`);
     } catch (error: any) {
@@ -96,5 +103,4 @@ class Bootstrap {
   }
 }
 
-export const PORT = env.PORT || 4000;
 export const { app, server } = new Bootstrap();
