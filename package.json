@@ -5,9 +5,9 @@
   "main": "./dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "NODE_ENV=production node ./dist/server.js",
+    "start": "--env=production node ./dist/server.js",
     "dev": "ts-node-dev --env=development --respawn ./src/server.ts",
-    "test": "NODE_ENV=test jest --watch --runInBand ./__test__"
+    "test": "--env=test jest --watch --runInBand ./__test__"
   },
   "keywords": [],
   "author": "",
