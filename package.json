@@ -5,7 +5,7 @@
   "main": "./dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "--env=production node ./dist/server.js",
+    "start": "node ./dist/server.js",
     "dev": "ts-node-dev --env=development --respawn ./src/server.ts",
     "test": "--env=test jest --watch --runInBand ./__test__"
   },
