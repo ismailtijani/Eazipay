@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/server.js",
-    "dev": "ts-node-dev --env=development --respawn ./src/server.ts",
-    "test": "--env=test jest --watch --runInBand ./__test__"
+    "dev": "ts-node-dev --respawn ./src/server.ts",
+    "test": "jest --watch --runInBand ./__test__"
   },
   "keywords": [],
   "author": "",

@@ -3,8 +3,8 @@ import { connect_db, drop_db } from "./db";
 import { app } from "../src/config/app";
 import request from "supertest";
 
-beforeAll(async () => await connect_db());
-afterAll(async () => await drop_db());
+// beforeAll(async () => await connect_db());
+// afterAll(async () => await drop_db());
 
 describe("Homepage", () => {
   it('should return "Welcome to Eazipay Application" for the home query', async () => {

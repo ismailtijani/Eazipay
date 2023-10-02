@@ -21,16 +21,19 @@ import ForgetPassword from "../resolvers/forgetPassword";
 import AccountConfrimation from "../resolvers/accountConfirmation";
 import Home from "../queries/homepage";
 import Profile from "../queries/profile";
-import { mongoUrl } from "../environment";
+import environment from "../environment";
 
 class Bootstrap {
   public app: Application;
   public server: ApolloServer;
+  public PORT: number;
 
   constructor() {
     this.app = express();
     this.server = {} as ApolloServer;
-    this.mongoSetup();
+    const { getDbName, getPort } = new environment();
+    this.PORT = getPort();
+    this.mongoSetup(getDbName());
     this.apolloServer();
     this.expressConfig();
   }
@@ -91,9 +94,9 @@ class Bootstrap {
     this.server.applyMiddleware({ app: this.app });
   }
 
-  private mongoSetup() {
+  private mongoSetup(url: string) {
     try {
-      mongoose.set("strictQuery", false).connect(mongoUrl);
+      mongoose.set("strictQuery", false).connect(url);
       console.log("DB Connection Successful");
       console.log(`'''''''''''''''''''''''''`);
     } catch (error: any) {
@@ -103,4 +106,4 @@ class Bootstrap {
   }
 }
 
-export const { app, server } = new Bootstrap();
+export const { app, server, PORT } = new Bootstrap();
