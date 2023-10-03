@@ -50,7 +50,7 @@ class Bootstrap {
     this.app.use(
       session({
         store: new RedisStore({ client: Redis }),
-        name: "sot",
+        name: "authToken",
         secret: env.SECRET as string,
         resave: false,
         saveUninitialized: false,

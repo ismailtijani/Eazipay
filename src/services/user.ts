@@ -90,7 +90,7 @@ export default class userService {
           return reject("Error occured, please try again");
         }
 
-        ctx.res.clearCookie("sot");
+        ctx.res.clearCookie("authToken");
         return resolve("You have successfully logged out of this system");
       })
     );
