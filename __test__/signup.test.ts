@@ -1,17 +1,17 @@
 import { app } from "../src/config/app";
 import request from "supertest";
 
-// describe("Homepage", () => {
-//   it('should return "Welcome to Eazipay Application" for the home query', async () => {
-//     const query = `
-//       query {
-//         home
-//       }
-//     `;
+describe("Signup", () => {
+  it('should "Create a new user account"', async () => {
+    const signup = `
+      query {
+        home
+      }
+    `;
 
-//     const response = await request(app).post("/graphql").send({ query }).expect(200);
+    const response = await request(app).post("/graphql").send({ signup }).expect(200);
 
-//     const responseData = response.body.data;
-//     expect(responseData.home).toEqual("Welcome to Eazipay Application");
-//   });
-// });
+    const responseData = response.body.data;
+    expect(responseData.signup).toEqual("Account created successfuly!");
+  });
+});
