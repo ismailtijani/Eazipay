@@ -1,22 +1,22 @@
 import { env } from "process";
 
 export default class Environment {
-  public mongoUrl: string;
-  public PORT: number;
-  getPort() {
-    if (env.NODE_ENV === "test") {
-      return parseInt(env.TEST_PORT as string);
-    } else if (env.NODE_ENV === "production") {
-      return parseInt(env.PORT as string);
-    } else return 8000;
+  getPort(): number {
+    const port = env.NODE_ENV === "test" ? env.TEST_PORT : env.PORT;
+    return parseInt(port as string) || 8000;
   }
 
-  getDbName() {
-    if (env.NODE_ENV === "test") {
-      return `mongodb://127.0.0.1/${env.MONGODB_URL_TEST as string}`;
-    } else if (env.NODE_ENV === "production") {
-      return env.MONGODB_URL as string;
-    } else return `mongodb://127.0.0.1/eazipayDev`;
+  getDbName(): string {
+    const dbNameMap: { [key: string]: string } = {
+      test: env.MONGODB_URL_TEST as string,
+      development: env.MONGODB_URL_DEV as string,
+    };
+
+    const url =
+      env.NODE_ENV === "test" || env.NODE_ENV === "development"
+        ? `mongodb://127.0.0.1/${dbNameMap[env.NODE_ENV as string]}`
+        : (env.MONGODB_URL as string);
+
+    return url;
   }
 }
-// export const { getDbName, getPort } = new Environment();
