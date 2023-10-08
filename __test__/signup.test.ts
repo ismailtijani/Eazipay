@@ -15,14 +15,12 @@ describe("Signup", () => {
         }
       )
     }
-
     `;
 
     try {
       const response = await request(app).post("/graphql").send({ query: signup }).expect(200);
 
       const responseData = response.body.data;
-      console.log(response.body.errors);
       // Check if the signup was successful
       expect(responseData.signup).toEqual("Account created successfuly!");
     } catch (error) {
