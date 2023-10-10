@@ -2,9 +2,9 @@ import { app } from "../src/config/app";
 import request from "supertest";
 import { drop_db } from "./db";
 
-afterAll(() => {
-  drop_db();
-});
+// afterAll(() => {
+//   drop_db();
+// });
 
 describe("Signup", () => {
   it("Should sign up a new user", async () => {
