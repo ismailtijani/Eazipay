@@ -1,6 +1,5 @@
 import { app } from "../src/config/app";
 import request from "supertest";
-import { drop_db } from "./db";
 
 describe("Login", () => {
   it("Login user successfully", async () => {
