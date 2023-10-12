@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2022",
+    "target": "es2021",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "CommonJS",
-    "lib": ["ES2022", "ESNext.AsyncIterable"],
+    "lib": ["es2021", "ESNext.AsyncIterable"],
     "rootDir": "./src",
     "moduleResolution": "node",
     "outDir": "./dist",

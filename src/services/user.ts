@@ -3,7 +3,6 @@ import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
 import MailService from "../mail/service";
 import { MyContext } from "../library/typeDef";
-import { ApolloError } from "apollo-server-express";
 
 export default class userService {
   static signup = async (
@@ -34,7 +33,7 @@ export default class userService {
         password,
         confirmationCode,
       });
-      if (!user) throw new ApolloError("Signup failed, try again");
+      if (!user) throw new Error("Signup failed, try again");
       //Generate auth token
 
       // user.confirmationCode = token;

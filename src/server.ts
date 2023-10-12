@@ -1,5 +1,3 @@
-import http from "http";
-import { app, PORT } from "./config/app";
-// import  from "./environment";
+import { PORT, httpServer } from "./config/app";
 
-http.createServer(app).listen(PORT, () => console.log(`Server is running 🚀🚀🚀 on port ${PORT}`));
+httpServer.listen(PORT, () => console.log(`Server is running 🚀🚀🚀 on port ${PORT}`));
