@@ -55,7 +55,6 @@ class Bootstrap {
 
     this.server = new ApolloServer({
       schema,
-      // context: ({ req, res }) => ({ req, res }),
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })],
     });
     // Start the Apollo Server
@@ -63,25 +62,6 @@ class Bootstrap {
     this.expressConfig();
   }
   private expressConfig() {
-    this.app.use(
-      "/",
-      express.json(),
-      cors<cors.CorsRequest>({
-        origin: ["https://studio.apollographql.com", "http://localhost:3000"],
-        credentials: true,
-      }),
-
-      // Apply middleware to integrate Apollo Server with Express
-      expressMiddleware(this.server)
-    );
-    // this.app.use();
-    // this.app.use(
-    //   cors<cors.CorsRequest>({
-    //     origin: ["https://studio.apollographql.com", "http://localhost:3000"],
-    //     credentials: true,
-    //   })
-    // );
-
     this.app.use(
       session({
         store: new RedisStore({ client: Redis }),
@@ -96,6 +76,16 @@ class Bootstrap {
           // sameSite: "none",
         },
       })
+    );
+    this.app.use(
+      "/",
+      express.json(),
+      cors<cors.CorsRequest>({
+        origin: ["http://localhost:3000"],
+        credentials: true,
+      }),
+      // Apply middleware to integrate Apollo Server with Express
+      expressMiddleware(this.server, { context: async ({ req, res }) => ({ req, res }) })
     );
   }
   private mongoSetup(url: string) {
