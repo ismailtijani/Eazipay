@@ -12,14 +12,14 @@ import RedisStore from "connect-redis";
 import Redis from "./redis";
 import cors from "cors";
 import http from "http";
-import ResetPassword from "../resolvers/resetPassword";
-import Signup from "../resolvers/signup";
-import Logout from "../resolvers/logout";
-import Login from "../resolvers/login";
-import ForgetPassword from "../resolvers/forgetPassword";
-import AccountConfrimation from "../resolvers/accountConfirmation";
-import Home from "../queries/homepage";
-import Profile from "../queries/profile";
+import ResetPassword from "../resolvers/mutations/resetPassword";
+import Signup from "../resolvers/mutations/signup";
+import Logout from "../resolvers/mutations/logout";
+import Login from "../resolvers/mutations/login";
+import ForgetPassword from "../resolvers/mutations/forgetPassword";
+import AccountConfrimation from "../resolvers/mutations/accountConfirmation";
+import Home from "../resolvers/queries/homepage";
+import Profile from "../resolvers/queries/profile";
 import environment from "../environment";
 
 class Bootstrap {

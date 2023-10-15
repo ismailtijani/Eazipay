@@ -1,6 +1,6 @@
 import { Arg, Mutation, Resolver } from "type-graphql";
-import userService from "../services/user";
-import { SignupInput } from "../library/typeDef";
+import userService from "../../services/user";
+import { SignupInput } from "../../library/typeDef";
 
 @Resolver()
 export default class Signup {

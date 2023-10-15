@@ -1,7 +1,7 @@
 import { Ctx, Query, Resolver, UseMiddleware } from "type-graphql";
-import { MyContext, UserType } from "../library/typeDef";
-import userService from "../services/user";
-import { Auth } from "../middleware/auth";
+import { MyContext, UserType } from "../../library/typeDef";
+import userService from "../../services/user";
+import { Auth } from "../../middleware/auth";
 
 @Resolver()
 export default class Profile {

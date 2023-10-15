@@ -1,13 +1,12 @@
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
-import { MyContext, UserType } from "../library/typeDef";
-import userService from "../services/user";
+import { LoginInput, MyContext, UserType } from "../../library/typeDef";
+import userService from "../../services/user";
 
 @Resolver()
 export default class Login {
   @Mutation(() => UserType, { nullable: true })
   async login(
-    @Arg("email") email: string,
-    @Arg("password") password: string,
+    @Arg("logininputs") { email, password }: LoginInput,
     @Ctx() ctx: MyContext
   ): Promise<UserType | null> {
     const user = await userService.login(email, password);

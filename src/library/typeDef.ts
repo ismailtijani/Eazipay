@@ -1,15 +1,14 @@
-import "reflect-metadata";
 import { IsEmail, Length, MinLength } from "class-validator";
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, ID, InputType, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class UserType {
-  @Field(() => String)
+  @Field(() => ID)
   _id: Types.ObjectId;
 
-  @Field()
+  @Field({ description: "The first name of the user" })
   firstName: string;
 
   @Field()
@@ -24,7 +23,7 @@ export class UserType {
   @IsEmail()
   email: string;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   phoneNumber: string;
 
   @Field()
@@ -62,15 +61,16 @@ export class SignupInput extends Password {
 @InputType()
 export class LoginInput {
   @Field()
+  @IsEmail()
   email: string;
 
-  @Field()
+  @Field({ nullable: false })
   password: string;
 }
 
 @InputType()
 export class ResetPasswordInputs extends Password {
-  @Field()
+  @Field({ nullable: false })
   token: string;
 }
 

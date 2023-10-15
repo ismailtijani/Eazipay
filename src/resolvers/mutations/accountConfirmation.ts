@@ -1,5 +1,5 @@
 import { Arg, Mutation, Resolver } from "type-graphql";
-import userService from "../services/user";
+import userService from "../../services/user";
 
 @Resolver()
 export default class AccountConfrimation {

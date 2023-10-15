@@ -1,6 +1,6 @@
 import { Ctx, Mutation, Resolver } from "type-graphql";
-import userService from "../services/user";
-import { MyContext } from "../library/typeDef";
+import userService from "../../services/user";
+import { MyContext } from "../../library/typeDef";
 
 @Resolver()
 export default class Logout {
