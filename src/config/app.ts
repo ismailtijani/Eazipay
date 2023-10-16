@@ -21,6 +21,7 @@ import AccountConfrimation from "../resolvers/mutations/accountConfirmation";
 import Home from "../resolvers/queries/homepage";
 import Profile from "../resolvers/queries/profile";
 import environment from "../environment";
+import { Auth } from "../middleware/auth";
 
 class Bootstrap {
   public app: Application;
@@ -50,6 +51,7 @@ class Bootstrap {
         ForgetPassword,
         AccountConfrimation,
       ],
+      validate: true,
       // resolvers: [__dirname + "../{queries, resolvers}/**/*.ts"],
     });
 
