@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { UserLevelEnum, AccountStatusEnum } from "../library/enums";
 import { IUser, IUserMethods, UserDocument, UserModel } from "./interface";
+import { GraphQLError } from "graphql";
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -83,11 +84,16 @@ userSchema.statics.findByCredentials = async (
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error("No Account with this credentials, kindly signup");
+      throw new GraphQLError("No Account with this credentials, kindly signup", {
+        extensions: { code: 400 },
+      });
     } else if (user && user.status !== AccountStatusEnum.ACTIVATED)
-      throw new Error("Account not activated, kindly check your mail for activation link");
+      throw new GraphQLError("Account not activated, kindly check your mail for activation link", {
+        extensions: { code: 400 },
+      });
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("Email or Password is incorrect");
+    if (!isMatch)
+      throw new GraphQLError("Email or Password is incorrect", { extensions: { code: 400 } });
     return user;
   } catch (error) {
     throw error;

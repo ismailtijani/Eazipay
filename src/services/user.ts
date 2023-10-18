@@ -3,6 +3,7 @@ import { AccountStatusEnum } from "../library/enums";
 import User from "../model/user";
 import MailService from "../mail/service";
 import { MyContext } from "../library/typeDef";
+import { GraphQLError } from "graphql";
 
 export default class userService {
   static signup = async (
@@ -33,7 +34,8 @@ export default class userService {
         password,
         confirmationCode,
       });
-      if (!user) throw new Error("Signup failed, try again");
+      // if (!user) throw new Error("Signup failed, try again");
+      if (!user) throw new GraphQLError("Signup failed, try again", { extensions: { code: 400 } });
       //Generate auth token
 
       // user.confirmationCode = token;

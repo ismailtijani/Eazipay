@@ -21,6 +21,8 @@ import AccountConfrimation from "../resolvers/mutations/accountConfirmation";
 import Home from "../resolvers/queries/homepage";
 import Profile from "../resolvers/queries/profile";
 import environment from "../environment";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
+import { ApolloServerErrorCode } from "@apollo/server/errors";
 
 class Bootstrap {
   public app: Application;
@@ -57,6 +59,23 @@ class Bootstrap {
     this.server = new ApolloServer({
       schema,
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })],
+      status400ForVariableCoercionErrors: true, //Its not working, the status is still 200
+      includeStacktraceInErrorResponses: false,
+      formatError: (formattedError, error) => {
+        // Return a different error message
+        if (formattedError.extensions?.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED) {
+          return {
+            message: formattedError.message,
+            extensions: formattedError.extensions,
+            // ...formattedError,
+            // message: "Your query doesn't match the schema. Try double-checking it!",
+          };
+        }
+
+        // Otherwise return the formatted error. This error can also
+        // be manipulated in other ways, as long as it's returned.
+        return formattedError;
+      },
     });
     // Start the Apollo Server
     await this.server.start();
