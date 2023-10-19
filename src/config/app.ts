@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import express, { Application } from "express";
+import mongoose from "mongoose";
 import "dotenv/config";
 import { env } from "process";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
 import { buildSchema } from "type-graphql";
-import mongoose from "mongoose";
 import session from "express-session";
 import RedisStore from "connect-redis";
 import Redis from "./redis";
@@ -20,22 +20,17 @@ import ForgetPassword from "../resolvers/mutations/forgetPassword";
 import AccountConfrimation from "../resolvers/mutations/accountConfirmation";
 import Home from "../resolvers/queries/homepage";
 import Profile from "../resolvers/queries/profile";
-import environment from "../environment";
-import { GraphQLError, GraphQLFormattedError } from "graphql";
-import { ApolloServerErrorCode } from "@apollo/server/errors";
-
+import customError from "../library/errorHandler";
+import Environment from "../environment";
 class Bootstrap {
   public app: Application;
   public server: ApolloServer;
-  public PORT: number;
   public httpServer: http.Server;
 
   constructor() {
     this.app = express();
     this.server = {} as ApolloServer;
-    const { getDbName, getPort } = new environment();
-    this.PORT = getPort();
-    this.mongoSetup(getDbName());
+    this.mongoSetup();
     this.httpServer = http.createServer(this.app);
     this.apolloServer();
   }
@@ -59,23 +54,9 @@ class Bootstrap {
     this.server = new ApolloServer({
       schema,
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })],
-      status400ForVariableCoercionErrors: true, //Its not working, the status is still 200
-      includeStacktraceInErrorResponses: false,
-      formatError: (formattedError, error) => {
-        // Return a different error message
-        if (formattedError.extensions?.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED) {
-          return {
-            message: formattedError.message,
-            extensions: formattedError.extensions,
-            // ...formattedError,
-            // message: "Your query doesn't match the schema. Try double-checking it!",
-          };
-        }
-
-        // Otherwise return the formatted error. This error can also
-        // be manipulated in other ways, as long as it's returned.
-        return formattedError;
-      },
+      status400ForVariableCoercionErrors: true, //It's not working, the status is still 200
+      includeStacktraceInErrorResponses: true,
+      formatError: customError,
     });
     // Start the Apollo Server
     await this.server.start();
@@ -108,16 +89,18 @@ class Bootstrap {
       expressMiddleware(this.server, { context: async ({ req, res }) => ({ req, res }) })
     );
   }
-  private mongoSetup(url: string) {
+  private async mongoSetup() {
     try {
-      mongoose.set("strictQuery", false).connect(url);
+      await mongoose.set("strictQuery", false).connect(Environment.getDbName());
       console.log("DB Connection Successful");
       console.log(`'''''''''''''''''''''''''`);
-    } catch (error: any) {
-      console.log(error);
+    } catch (error) {
+      console.log("DB Connection Error", error);
       process.exit(1);
     }
   }
 }
 
-export const { server, PORT, httpServer } = new Bootstrap();
+export const PORT = Environment.getPort();
+
+export const { server, httpServer } = new Bootstrap();

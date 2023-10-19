@@ -1,6 +1,6 @@
 import { env } from "process";
 
-export default class Environment {
+class Environment {
   getPort(): number {
     const port = env.NODE_ENV === "test" ? env.TEST_PORT : env.PORT;
     return parseInt(port as string) || 8000;
@@ -20,3 +20,5 @@ export default class Environment {
     return url;
   }
 }
+
+export default new Environment();

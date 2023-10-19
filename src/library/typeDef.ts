@@ -53,7 +53,8 @@ export class SignupInput extends Password implements Partial<UserType> {
   @IsEmail()
   email: string;
 
-  @Field({ nullable: true })
+  @Field()
+  @Length(10)
   phoneNumber: string;
 }
 
