@@ -103,4 +103,4 @@ class Bootstrap {
 
 export const PORT = Environment.getPort();
 
-export const { server, httpServer } = new Bootstrap();
+export const { server, app, httpServer } = new Bootstrap();
