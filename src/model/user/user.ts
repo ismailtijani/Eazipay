@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { UserLevelEnum, AccountStatusEnum } from "../library/enums";
+import { UserLevelEnum, AccountStatusEnum } from "../../library/enums";
 import { IUser, IUserMethods, UserDocument, UserModel } from "./interface";
 import { GraphQLError } from "graphql";
 

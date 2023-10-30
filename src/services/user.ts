@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { AccountStatusEnum } from "../library/enums";
-import User from "../model/user";
+import User from "../model/user/user";
 import MailService from "../mail/service";
 import { MyContext } from "../library/typeDef";
 import { GraphQLError } from "graphql";
